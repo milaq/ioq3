@@ -237,42 +237,42 @@ Handles user intended acceleration
 ==============
 */
 static void PM_Accelerate( vec3_t wishdir, float wishspeed, float accel ) {
-#if 1
-	// q2 style
-	int			i;
-	float		addspeed, accelspeed, currentspeed;
+	if (! (pm->pmove_flags & DF_NO_BUNNY) ) {
+		// q2 style
+		int			i;
+		float		addspeed, accelspeed, currentspeed;
 
-	currentspeed = DotProduct (pm->ps->velocity, wishdir);
-	addspeed = wishspeed - currentspeed;
-	if (addspeed <= 0) {
-		return;
-	}
-	accelspeed = accel*pml.frametime*wishspeed;
-	if (accelspeed > addspeed) {
-		accelspeed = addspeed;
-	}
+		currentspeed = DotProduct (pm->ps->velocity, wishdir);
+		addspeed = wishspeed - currentspeed;
+		if (addspeed <= 0) {
+			return;
+		}
+		accelspeed = accel*pml.frametime*wishspeed;
+		if (accelspeed > addspeed) {
+			accelspeed = addspeed;
+		}
 	
-	for (i=0 ; i<3 ; i++) {
-		pm->ps->velocity[i] += accelspeed*wishdir[i];	
+		for (i=0 ; i<3 ; i++) {
+			pm->ps->velocity[i] += accelspeed*wishdir[i];	
+		}
+	} else {
+		// proper way (avoids strafe jump maxspeed bug), but feels bad
+		vec3_t		wishVelocity;
+		vec3_t		pushDir;
+		float		pushLen;
+		float		canPush;
+
+		VectorScale( wishdir, wishspeed, wishVelocity );
+		VectorSubtract( wishVelocity, pm->ps->velocity, pushDir );
+		pushLen = VectorNormalize( pushDir );
+
+		canPush = accel*pml.frametime*wishspeed;
+		if (canPush > pushLen) {
+			canPush = pushLen;
+		}
+
+		VectorMA( pm->ps->velocity, canPush, pushDir, pm->ps->velocity );
 	}
-#else
-	// proper way (avoids strafe jump maxspeed bug), but feels bad
-	vec3_t		wishVelocity;
-	vec3_t		pushDir;
-	float		pushLen;
-	float		canPush;
-
-	VectorScale( wishdir, wishspeed, wishVelocity );
-	VectorSubtract( wishVelocity, pm->ps->velocity, pushDir );
-	pushLen = VectorNormalize( pushDir );
-
-	canPush = accel*pml.frametime*wishspeed;
-	if (canPush > pushLen) {
-		canPush = pushLen;
-	}
-
-	VectorMA( pm->ps->velocity, canPush, pushDir, pm->ps->velocity );
-#endif
 }
 
 
@@ -1478,10 +1478,14 @@ static void PM_BeginWeaponChange( int weapon ) {
 		return;
 	}
 
-	PM_AddEvent( EV_CHANGE_WEAPON );
-	pm->ps->weaponstate = WEAPON_DROPPING;
-	pm->ps->weaponTime += 200;
-	PM_StartTorsoAnim( TORSO_DROP );
+	if ( pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE ) {
+		pm->ps->weaponstate = WEAPON_DROPPING;
+	} else {
+		PM_AddEvent( EV_CHANGE_WEAPON );
+		pm->ps->weaponstate = WEAPON_DROPPING;
+		pm->ps->weaponTime += 200;
+		PM_StartTorsoAnim( TORSO_DROP );
+	}
 }
 
 
@@ -1504,8 +1508,10 @@ static void PM_FinishWeaponChange( void ) {
 
 	pm->ps->weapon = weapon;
 	pm->ps->weaponstate = WEAPON_RAISING;
-	pm->ps->weaponTime += 250;
-	PM_StartTorsoAnim( TORSO_RAISE );
+	if (! (pm->pmove_flags & DF_INSTANT_WEAPON_CHANGE)) {
+		pm->ps->weaponTime += 250;
+		PM_StartTorsoAnim( TORSO_RAISE );
+	}
 }
 
 

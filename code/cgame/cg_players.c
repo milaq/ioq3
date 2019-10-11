@@ -2150,8 +2150,10 @@ Also called by CG_Missile for quad rockets, but nobody can tell...
 void CG_AddRefEntityWithPowerups( refEntity_t *ent, entityState_t *state, int team ) {
 
 	if ( state->powerups & ( 1 << PW_INVIS ) ) {
-		ent->customShader = cgs.media.invisShader;
-		trap_R_AddRefEntityToScene( ent );
+		if ( (cgs.dmflags & DF_TOTAL_INVIS) == 0) {
+			ent->customShader = cgs.media.invisShader;
+			trap_R_AddRefEntityToScene( ent );
+		}
 	} else {
 		/*
 		if ( state->eFlags & EF_KAMIKAZE ) {

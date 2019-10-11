@@ -976,6 +976,11 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	if ( damage < 1 ) {
 		damage = 1;
 	}
+
+	if ( targ == attacker && (g_dmflags.integer & DF_NO_SELF_DAMAGE) ) {
+		damage = 0;
+	}
+
 	take = damage;
 
 	// save some from armor

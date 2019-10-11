@@ -1169,8 +1169,10 @@ CG_AddWeaponWithPowerups
 static void CG_AddWeaponWithPowerups( refEntity_t *gun, int powerups ) {
 	// add powerup effects
 	if ( powerups & ( 1 << PW_INVIS ) ) {
-		gun->customShader = cgs.media.invisShader;
-		trap_R_AddRefEntityToScene( gun );
+		if ( (cgs.dmflags & DF_TOTAL_INVIS) == 0) {
+			gun->customShader = cgs.media.invisShader;
+			trap_R_AddRefEntityToScene( gun );
+		}
 	} else {
 		trap_R_AddRefEntityToScene( gun );
 

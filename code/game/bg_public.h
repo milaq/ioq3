@@ -184,6 +184,7 @@ typedef struct {
 	// for fixed msec Pmove
 	int			pmove_fixed;
 	int			pmove_msec;
+	int			pmove_flags;
 
 	// callbacks to test the world
 	// these will be different functions during game and cgame
@@ -654,9 +655,14 @@ qboolean	BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 
 
 // g_dmflags->integer flags
-#define	DF_NO_FALLING			8
-#define DF_FIXED_FOV			16
-#define	DF_NO_FOOTSTEPS			32
+#define DF_NO_FALLING					8
+#define DF_FIXED_FOV					16
+#define DF_NO_FOOTSTEPS					32
+#define DF_INSTANT_WEAPON_CHANGE		64
+#define DF_NO_BUNNY						128
+#define DF_TOTAL_INVIS					256
+#define DF_LIGHT_VOTING					512
+#define DF_NO_SELF_DAMAGE				1024
 
 // content masks
 #define	MASK_ALL				(-1)
