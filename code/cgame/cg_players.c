@@ -947,28 +947,34 @@ void CG_NewClientInfo( int clientNum ) {
 	v = Info_ValueForKey( configstring, "g_blueteam" );
 	Q_strncpyz(newInfo.blueTeam, v, MAX_TEAMNAME);
 
+	if ( cg_forceModel.integer && cgs.gametype >= GT_TEAM &&
+			cg.clientNum == clientNum && newInfo.team != ci->team ) {
+		// check whether player switched teams to update player models
+		// if cg_forceModel is set
+		forceModelModificationCount--;
+	}
+
 	// model
 	v = Info_ValueForKey( configstring, "model" );
-	if ( cg_forceModel.integer ) {
+	if ( cg_forceModel.integer && cg.clientNum != clientNum && newInfo.team != TEAM_SPECTATOR ) {
 		// forcemodel makes everyone use a single model
 		// to prevent load hitches
 		char modelStr[MAX_QPATH];
 		char *skin;
 
-		if( cgs.gametype >= GT_TEAM ) {
-			Q_strncpyz( newInfo.modelName, DEFAULT_TEAM_MODEL, sizeof( newInfo.modelName ) );
-			Q_strncpyz( newInfo.skinName, "default", sizeof( newInfo.skinName ) );
+		if ( cgs.gametype >= GT_TEAM && cgs.clientinfo[cg.clientNum].team == newInfo.team ) {
+			trap_Cvar_VariableStringBuffer( "cg_teamModel", modelStr, sizeof( modelStr ) );
 		} else {
-			trap_Cvar_VariableStringBuffer( "model", modelStr, sizeof( modelStr ) );
-			if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
-				skin = "default";
-			} else {
-				*skin++ = 0;
-			}
-
-			Q_strncpyz( newInfo.skinName, skin, sizeof( newInfo.skinName ) );
-			Q_strncpyz( newInfo.modelName, modelStr, sizeof( newInfo.modelName ) );
+			trap_Cvar_VariableStringBuffer( "cg_enemyModel", modelStr, sizeof( modelStr ) );
 		}
+		if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
+			skin = "default";
+		} else {
+			*skin++ = 0;
+		}
+
+		Q_strncpyz( newInfo.skinName, skin, sizeof( newInfo.skinName ) );
+		Q_strncpyz( newInfo.modelName, modelStr, sizeof( newInfo.modelName ) );
 
 		if ( cgs.gametype >= GT_TEAM ) {
 			// keep skin name
@@ -993,26 +999,25 @@ void CG_NewClientInfo( int clientNum ) {
 
 	// head model
 	v = Info_ValueForKey( configstring, "hmodel" );
-	if ( cg_forceModel.integer ) {
+	if ( cg_forceModel.integer && cg.clientNum != clientNum && newInfo.team != TEAM_SPECTATOR ) {
 		// forcemodel makes everyone use a single model
 		// to prevent load hitches
 		char modelStr[MAX_QPATH];
 		char *skin;
 
-		if( cgs.gametype >= GT_TEAM ) {
-			Q_strncpyz( newInfo.headModelName, DEFAULT_TEAM_HEAD, sizeof( newInfo.headModelName ) );
-			Q_strncpyz( newInfo.headSkinName, "default", sizeof( newInfo.headSkinName ) );
+		if ( cgs.gametype >= GT_TEAM && cgs.clientinfo[cg.clientNum].team == newInfo.team ) {
+			trap_Cvar_VariableStringBuffer( "cg_teamModel", modelStr, sizeof( modelStr ) );
 		} else {
-			trap_Cvar_VariableStringBuffer( "headmodel", modelStr, sizeof( modelStr ) );
-			if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
-				skin = "default";
-			} else {
-				*skin++ = 0;
-			}
-
-			Q_strncpyz( newInfo.headSkinName, skin, sizeof( newInfo.headSkinName ) );
-			Q_strncpyz( newInfo.headModelName, modelStr, sizeof( newInfo.headModelName ) );
+			trap_Cvar_VariableStringBuffer( "cg_enemyModel", modelStr, sizeof( modelStr ) );
 		}
+		if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
+			skin = "default";
+		} else {
+			*skin++ = 0;
+		}
+
+		Q_strncpyz( newInfo.headSkinName, skin, sizeof( newInfo.headSkinName ) );
+		Q_strncpyz( newInfo.headModelName, modelStr, sizeof( newInfo.headModelName ) );
 
 		if ( cgs.gametype >= GT_TEAM ) {
 			// keep skin name

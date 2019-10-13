@@ -158,6 +158,8 @@ vmCvar_t 	cg_teamChatHeight;
 vmCvar_t 	cg_stats;
 vmCvar_t 	cg_buildScript;
 vmCvar_t 	cg_forceModel;
+vmCvar_t 	cg_enemyModel;
+vmCvar_t 	cg_teamModel;
 vmCvar_t	cg_paused;
 vmCvar_t	cg_blood;
 vmCvar_t	cg_predictItems;
@@ -281,6 +283,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_teamChatTime, "cg_teamChatTime", "3000", CVAR_ARCHIVE  },
 	{ &cg_teamChatHeight, "cg_teamChatHeight", "0", CVAR_ARCHIVE  },
 	{ &cg_forceModel, "cg_forceModel", "0", CVAR_ARCHIVE  },
+	{ &cg_enemyModel, "cg_enemyModel", "keel/default", CVAR_ARCHIVE  },
+	{ &cg_teamModel, "cg_teamModel", "sarge/default", CVAR_ARCHIVE  },
 	{ &cg_predictItems, "cg_predictItems", "1", CVAR_ARCHIVE },
 #ifdef MISSIONPACK
 	{ &cg_deferPlayers, "cg_deferPlayers", "0", CVAR_ARCHIVE },
