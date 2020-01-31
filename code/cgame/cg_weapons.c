@@ -977,36 +977,46 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 
 	memset( &beam, 0, sizeof( beam ) );
 
-	// CPMA  "true" lightning
-	if ((cent->currentState.number == cg.predictedPlayerState.clientNum) && (cg_trueLightning.value != 0)) {
-		vec3_t angle;
-		int i;
+	// if the entity is us, unlagged is on server-side, and we've got it on for the lightning gun
+	if ( (cent->currentState.number == cg.predictedPlayerState.clientNum) && cgs.delagHitscan &&
+			( cg_delag.integer & 1 || cg_delag.integer & 8 ) ) {
+		// always shoot straight forward from our current position
+		AngleVectors( cg.predictedPlayerState.viewangles, forward, NULL, NULL );
+		VectorCopy( cg.predictedPlayerState.origin, muzzlePoint );
+	}
+	else {
+		// CPMA  "true" lightning
+		if ((cent->currentState.number == cg.predictedPlayerState.clientNum) && (cg_trueLightning.value != 0)) {
+			vec3_t angle;
+			int i;
+			vec3_t viewangles;
+			VectorCopy( cg.predictedPlayerState.viewangles, viewangles );
 
-		for (i = 0; i < 3; i++) {
-			float a = cent->lerpAngles[i] - cg.refdefViewAngles[i];
-			if (a > 180) {
-				a -= 360;
-			}
-			if (a < -180) {
-				a += 360;
+			for (i = 0; i < 3; i++) {
+				float a = cent->lerpAngles[i] - viewangles[i];
+				if (a > 180) {
+					a -= 360;
+				}
+				if (a < -180) {
+					a += 360;
+				}
+
+				angle[i] = viewangles[i] + a * (1.0 - cg_trueLightning.value);
+				if (angle[i] < 0) {
+					angle[i] += 360;
+				}
+				if (angle[i] > 360) {
+					angle[i] -= 360;
+				}
 			}
 
-			angle[i] = cg.refdefViewAngles[i] + a * (1.0 - cg_trueLightning.value);
-			if (angle[i] < 0) {
-				angle[i] += 360;
-			}
-			if (angle[i] > 360) {
-				angle[i] -= 360;
-			}
+			AngleVectors(angle, forward, NULL, NULL );
+			VectorCopy(cg.predictedPlayerState.origin, muzzlePoint );
+		} else {
+			// !CPMA
+			AngleVectors( cent->lerpAngles, forward, NULL, NULL );
+			VectorCopy(cent->lerpOrigin, muzzlePoint );
 		}
-
-		AngleVectors(angle, forward, NULL, NULL );
-		VectorCopy(cent->lerpOrigin, muzzlePoint );
-//		VectorCopy(cg.refdef.vieworg, muzzlePoint );
-	} else {
-		// !CPMA
-		AngleVectors( cent->lerpAngles, forward, NULL, NULL );
-		VectorCopy(cent->lerpOrigin, muzzlePoint );
 	}
 
 	anim = cent->currentState.legsAnim & ~ANIM_TOGGLEBIT;
@@ -1752,6 +1762,8 @@ void CG_FireWeapon( centity_t *cent ) {
 	if ( weap->ejectBrassFunc && cg_brassTime.integer > 0 ) {
 		weap->ejectBrassFunc( cent );
 	}
+
+	CG_PredictWeaponEffects( cent );
 }
 
 
@@ -2056,7 +2068,7 @@ Perform the same traces the server did to locate the
 hit splashes
 ================
 */
-static void CG_ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, int otherEntNum ) {
+void CG_ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, int otherEntNum ) {
 	int			i;
 	float		r, u;
 	vec3_t		end;

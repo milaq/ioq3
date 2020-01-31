@@ -992,29 +992,61 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 				VectorMA(es->origin2, 4, cg.refdef.viewaxis[1], es->origin2);
 		}
 
-		CG_RailTrail(ci, es->origin2, es->pos.trBase);
+		// if the client is us, unlagged is on server-side, and we've got it client-side
+		if ( es->clientNum == cg.predictedPlayerState.clientNum &&
+				cgs.delagHitscan && (cg_delag.integer & 1 || cg_delag.integer & 16) ) {
+			// do nothing, because it was already predicted
+		}
+		else {
+			// draw a rail trail, because it wasn't predicted
+			CG_RailTrail(ci, es->origin2, es->pos.trBase);
 
-		// if the end was on a nomark surface, don't make an explosion
-		if ( es->eventParm != 255 ) {
-			ByteToDir( es->eventParm, dir );
-			CG_MissileHitWall( es->weapon, es->clientNum, position, dir, IMPACTSOUND_DEFAULT );
+			// if the end was on a nomark surface, don't make an explosion
+			if ( es->eventParm != 255 ) {
+				ByteToDir( es->eventParm, dir );
+				CG_MissileHitWall( es->weapon, es->clientNum, position, dir, IMPACTSOUND_DEFAULT );
+			}
 		}
 		break;
 
 	case EV_BULLET_HIT_WALL:
 		DEBUGNAME("EV_BULLET_HIT_WALL");
-		ByteToDir( es->eventParm, dir );
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qfalse, ENTITYNUM_WORLD );
+		// if the client is us, unlagged is on server-side, and we've got it client-side
+		if ( es->clientNum == cg.predictedPlayerState.clientNum &&
+				cgs.delagHitscan && (cg_delag.integer & 1 || cg_delag.integer & 2) ) {
+			// do nothing, because it was already predicted
+		}
+		else {
+			// do the bullet, because it wasn't predicted
+			ByteToDir( es->eventParm, dir );
+			CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qfalse, ENTITYNUM_WORLD );
+		}
 		break;
 
 	case EV_BULLET_HIT_FLESH:
 		DEBUGNAME("EV_BULLET_HIT_FLESH");
-		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qtrue, es->eventParm );
+		// if the client is us, unlagged is on server-side, and we've got it client-side
+		if ( es->clientNum == cg.predictedPlayerState.clientNum &&
+				cgs.delagHitscan && (cg_delag.integer & 1 || cg_delag.integer & 2) ) {
+			// do nothing, because it was already predicted
+		}
+		else {
+			// do the bullet, because it wasn't predicted
+			CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qtrue, es->eventParm );
+		}
 		break;
 
 	case EV_SHOTGUN:
 		DEBUGNAME("EV_SHOTGUN");
-		CG_ShotgunFire( es );
+		// if the client is us, unlagged is on server-side, and we've got it client-side
+		if ( es->clientNum == cg.predictedPlayerState.clientNum &&
+				cgs.delagHitscan && (cg_delag.integer & 1 || cg_delag.integer & 4) ) {
+			// do nothing, because it was already predicted
+		}
+		else {
+			// do the shotgun pattern, because it wasn't predicted
+			CG_ShotgunFire( es );
+		}
 		break;
 
 	case EV_GENERAL_SOUND:
