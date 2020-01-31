@@ -41,6 +41,24 @@ Defaults are:
   `cg_enemyModel`: keel/default
   `cg_teamModel`: sarge/default
 
+### Integrate Unlagged by Neil "haste" Toronto
+
+Port from the latest version 2.01
+
+`cg_delag`: Enable client side lag compensation if supported by the server (enabled by default)
+`g_delagHitscan`: Enable server side lag compensation (disabled by default)
+
+For more info consult the Unlagged documentation.
+
+The following was changed from the default codebase:
+
+ * Lag compensation is _off_ by default (g_delagHitscan)
+ * True ping is off by default (g_truePing)
+ * cl_timenudge clamped to -30 and 30 (instead of -50 and 50)
+ * Lag simulation _not_ ported (cg_latentSnaps, cg_latentCmds, cg_plOut)
+ * Bounding box _not_ ported (cg_drawBBox)
+ * Lightning damage server option _not_ ported (g_lightningDamage)
+
 ## Credits
 
  * id Software: Creating the masterpiece Quake 3 Arena
