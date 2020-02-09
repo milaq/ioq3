@@ -350,7 +350,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_debugDelag, "cg_debugDelag", "0", CVAR_USERINFO | CVAR_CHEAT },
 	{ &cg_cmdTimeNudge, "cg_cmdTimeNudge", "0", CVAR_ARCHIVE | CVAR_USERINFO },
 	// this will be automagically copied from the server
-	{ &sv_fps, "sv_fps", "20", 0 },
+	{ &sv_fps, "sv_fps", "20", CVAR_SYSTEMINFO },
 	{ &cg_projectileNudge, "cg_projectileNudge", "0", CVAR_ARCHIVE },
 	{ &cg_optimizePrediction, "cg_optimizePrediction", "1", CVAR_ARCHIVE },
 	{ &cl_timeNudge, "cl_timeNudge", "0", CVAR_ARCHIVE },
