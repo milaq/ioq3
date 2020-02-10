@@ -997,14 +997,6 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 //	if ( !client->areabits )
 //		client->areabits = G_Alloc( (trap_AAS_PointReachabilityAreaIndex( NULL ) + 7) / 8 );
 
-	// announce backwards reconciliation
-	if ( g_delagHitscan.integer ) {
-		trap_SendServerCommand( clientNum, "print \"Full lag compensation is ON!\n\"" );
-	}
-	else {
-		trap_SendServerCommand( clientNum, "print \"Full lag compensation is OFF!\n\"" );
-	}
-
 	return NULL;
 }
 
