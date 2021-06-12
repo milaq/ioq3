@@ -190,6 +190,7 @@ vmCvar_t	cg_bigFont;
 #endif
 vmCvar_t	cg_noTaunt;
 vmCvar_t	cg_noProjectileTrail;
+vmCvar_t	cg_noRemoteEmptyItemSound;
 vmCvar_t	cg_oldRail;
 vmCvar_t	cg_oldRocket;
 vmCvar_t	cg_oldPlasma;
@@ -343,6 +344,7 @@ static cvarTable_t cvarTable[] = {
 #endif
 	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
+	{ &cg_noRemoteEmptyItemSound, "cg_noRemoteEmptyItemSound", "0", CVAR_ARCHIVE},
 	{ &cg_oldRail, "cg_oldRail", "1", CVAR_ARCHIVE},
 	{ &cg_oldRocket, "cg_oldRocket", "1", CVAR_ARCHIVE},
 	{ &cg_oldPlasma, "cg_oldPlasma", "1", CVAR_ARCHIVE},

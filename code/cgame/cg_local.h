@@ -1196,6 +1196,7 @@ extern  vmCvar_t		cg_bigFont;
 #endif
 extern	vmCvar_t		cg_noTaunt;
 extern	vmCvar_t		cg_noProjectileTrail;
+extern	vmCvar_t		cg_noRemoteEmptyItemSound;
 extern	vmCvar_t		cg_oldRail;
 extern	vmCvar_t		cg_oldRocket;
 extern	vmCvar_t		cg_oldPlasma;

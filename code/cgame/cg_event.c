@@ -367,7 +367,9 @@ static void CG_UseItem( centity_t *cent ) {
 	switch ( itemNum ) {
 	default:
 	case HI_NONE:
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
+		if ( cg_noRemoteEmptyItemSound.integer == 0 || es->number == cg.snap->ps.clientNum ) {
+			trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
+		}
 		break;
 
 	case HI_TELEPORTER:
