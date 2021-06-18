@@ -552,10 +552,10 @@ static void ArenaServers_UpdateMenu( void ) {
 		else if( servernodeptr->maxPing && servernodeptr->pingtime > servernodeptr->maxPing ) {
 			pingColor = S_COLOR_BLUE;
 		}
-		else if( servernodeptr->pingtime < 200 ) {
+		else if( servernodeptr->pingtime < 50 ) {
 			pingColor = S_COLOR_GREEN;
 		}
-		else if( servernodeptr->pingtime < 400 ) {
+		else if( servernodeptr->pingtime < 100 ) {
 			pingColor = S_COLOR_YELLOW;
 		}
 		else {
