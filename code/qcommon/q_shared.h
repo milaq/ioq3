@@ -835,6 +835,8 @@ int Q_PrintStrlen( const char *string );
 char *Q_CleanStr( char *string );
 // Count the number of char tocount encountered in string
 int Q_CountChar(const char *string, char tocount);
+// trims leading and trailing whitespace from string
+char *Q_TrimWhitespaceStr( char *string );
 
 //=============================================
 
