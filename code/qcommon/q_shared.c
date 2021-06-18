@@ -1010,6 +1010,27 @@ int Q_CountChar(const char *string, char tocount)
 	return count;
 }
 
+char *Q_TrimWhitespaceStr(char *string) {
+	int i;
+	int begin = 0;
+	int end = strlen(string) - 1;
+
+	while (isspace((unsigned char) string[begin])) {
+		begin++;
+	}
+
+	while ((end >= begin) && isspace((unsigned char) string[end])) {
+		end--;
+	}
+
+	for (i = begin; i <= end; i++) {
+		string[i - begin] = string[i];
+	}
+	string[i - begin] = '\0';
+
+	return string;
+}
+
 int QDECL Com_sprintf(char *dest, int size, const char *fmt, ...)
 {
 	int		len;
