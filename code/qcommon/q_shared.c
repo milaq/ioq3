@@ -1031,6 +1031,44 @@ char *Q_TrimWhitespaceStr(char *string) {
 	return string;
 }
 
+char *Q_SanitizeServerName(char *string) {
+	char*	d;
+	char*	s;
+	int		c;
+    int	 	chartype = -1;
+
+	s = string;
+	d = string;
+	while ((c = *s) != 0) {
+		if (Q_IsColorString(s)) {
+			s++;
+		}
+		else if (isalnum(c) == 1) {
+			*d++ = c;
+			chartype = 0;
+		}
+		else if ((chartype == 0 || chartype == 3) &&
+				c == 0x20) {
+			*d++ = c;
+			chartype = 1;
+		}
+		else if (chartype == 0 &&
+				(c == 0x2d || c == 0x5f)) {
+			*d++ = c;
+			chartype = 2;
+		}
+		else if ((chartype == -1 || chartype == 0 || chartype == 1) &&
+				(c == 0x5b || c == 0x5d || c == 0x28 || c == 0x29)) {
+			*d++ = c;
+			chartype = 3;
+		}
+		s++;
+	}
+	*d = '\0';
+
+	return string;
+}
+
 int QDECL Com_sprintf(char *dest, int size, const char *fmt, ...)
 {
 	int		len;

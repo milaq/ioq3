@@ -668,6 +668,7 @@ static void ArenaServers_Insert( char* adrstr, char* info, int pingtime )
 
 	Q_strncpyz( servernodeptr->hostname, Info_ValueForKey( info, "hostname"), MAX_HOSTNAMELENGTH );
 	Q_CleanStr( servernodeptr->hostname );
+	Q_SanitizeServerName(servernodeptr->hostname);
 	Q_TrimWhitespaceStr(servernodeptr->hostname);
 	Q_strupr( servernodeptr->hostname );
 

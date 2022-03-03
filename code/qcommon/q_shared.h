@@ -837,6 +837,8 @@ char *Q_CleanStr( char *string );
 int Q_CountChar(const char *string, char tocount);
 // trims leading and trailing whitespace from string
 char *Q_TrimWhitespaceStr(char *string);
+// strip illegal or garbage characters from string
+char *Q_SanitizeServerName(char *string);
 
 //=============================================
 
