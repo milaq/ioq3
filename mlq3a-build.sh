@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 version=$(cat mlq3a-version)
 commithash=$(git log --pretty=format:'%h' -n 1)
 builddate=$(date +%Y%m%d)
